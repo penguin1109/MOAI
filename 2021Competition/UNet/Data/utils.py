@@ -31,7 +31,7 @@ def save_checkpoint(state, filename = 'unet_checkpoint.pth.tar'):
 
 def load_checkpoint(checkpoint, model):
     print("=>loading checkpoint...")
-    torch.load_state_dict(checkpoint['state_dict'])
+    model.load_state_dict(checkpoint['state_dict'])
 
 def get_loaders(train_dir, train_maskdir, batch_size, train_transform, valid_transform, rate, num_workers = 1, pin_memory = True):
     # 매번 validataion dataset을 새롭게 설정해 준다고 하면 (전체 dataset에서 비율을 정해서 해줌)
