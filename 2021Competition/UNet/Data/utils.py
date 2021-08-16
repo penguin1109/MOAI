@@ -18,11 +18,23 @@ def get_mask(mask, type = None):
     return mask
 
 def my_encode(mask):
-    x = np.zeros((mask.shape[0], mask.shape[1], 1))
-    x[mask[:,:,0] > 0.5] = 0 # bg
-    x[mask[:,:,1] > 0.5] = 1 # organ
-    x[mask[:,:,2] > 0.5] = 2 # tumor
+    x = np.zeros((mask.shape[0], mask.shape[1], 3))
+    mask = np.around(mask, 8)
+    m_1 = mask[:,:,0] < 0.00784314
+    m_2 = mask[:,:,1] >= 0.00392157
+    m_3 = np.logical_and(m_1, m_2)
+    x[:,:,0] = m_1
+    x[:,:,1] = m_2
+    x[:,:,2] = m_3
 
+    return x
+
+def pred_encode(mask):
+    x = np.zeros((mask.shape[0], mask.shape[1], 1))
+    x[mask[:,:,0] == 1] = 0
+    x[mask[:,:,0] == 0] = 1
+    x[mask[:,:,1] == 1] = 2
+    
     return x
 
 def save_checkpoint(state, filename = 'unet_checkpoint.pth.tar'):

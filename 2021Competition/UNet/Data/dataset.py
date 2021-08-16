@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 from pydicom import dcmread
 import matplotlib.image as mpimg
 from utils import get_mask
+from dcmutils import read_dicom
+
 
 class MOAIDataset(Dataset):
     def __init__(self, image_dir, mask_dir, transform = None, rate = 1.0, valid = True):
@@ -32,7 +34,7 @@ class MOAIDataset(Dataset):
         mask_path = self.masks[index]  # .png로 저장된 PNG format의 ground truth data
         
 
-        image = dcmread(img_path).pixel_array # shape = (512, 512)
+        image = read_dicom(img_path, 100, 50) # shape = (512, 512)
         mask = mpimg.imread(mask_path)
         mask = np.around(mask, 8)
 
