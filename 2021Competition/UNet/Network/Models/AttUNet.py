@@ -8,31 +8,31 @@ class AttUNet(nn.Module):
     # filtersize 3 2배로 upsampling ReLU activation function
     def __init__(self, first_output_ch, img_ch = 3, fin_output_ch = 1):
         super(AttUNet, self).__init__()
-        self.MaxPool = nn.MaxPool2d(kernel_size = 2, stride = 2)
+        self.Maxpool = nn.MaxPool2d(kernel_size=2,stride=2)
 
-        self.Conv1 = nn.Conv2d(in_channels = img_ch, out_channels = 64)
-        self.Conv2 = nn.Conv2d(in_channels = 64, out_channels = 128)
-        self.Conv3 = nn.Conv2d(in_channels = 128, out_channels = 256)
-        self.Conv4 = nn.Conv2d(in_channels = 256, out_channels = 512)
-        self.Conv5 = nn.Conv2d(in_channels = 512, out_channels = 1024)
+        self.Conv1 = conv_block(ch_in=img_ch,ch_out=64)
+        self.Conv2 = conv_block(ch_in=64,ch_out=128)
+        self.Conv3 = conv_block(ch_in=128,ch_out=256)
+        self.Conv4 = conv_block(ch_in=256,ch_out=512)
+        self.Conv5 = conv_block(ch_in=512,ch_out=1024)
 
-        self.Up5 = up_conv(in_channels = 1024, out_channels = 512)
-        self.Att5 = Attention_block(F_g = 512, F_l = 512, F_int = 256)
-        self.Up_conv5 = conv_block(ch_in = 1024, ch_out = 512)
+        self.Up5 = up_conv(ch_in=1024,ch_out=512)
+        self.Att5 = Attention_block(F_g=512,F_l=512,F_int=256)
+        self.Up_conv5 = conv_block(ch_in=1024, ch_out=512)
 
-        self.Up4 = up_conv(in_channels = 512, out_channels = 256)
-        self.Att4 = Attention_block(F_g = 256, F_l = 256, F_int = 128)
-        self.Up_conv4 = conv_block(ch_in = 512, ch_out = 256)
+        self.Up4 = up_conv(ch_in=512,ch_out=256)
+        self.Att4 = Attention_block(F_g=256,F_l=256,F_int=128)
+        self.Up_conv4 = conv_block(ch_in=512, ch_out=256)
+        
+        self.Up3 = up_conv(ch_in=256,ch_out=128)
+        self.Att3 = Attention_block(F_g=128,F_l=128,F_int=64)
+        self.Up_conv3 = conv_block(ch_in=256, ch_out=128)
+        
+        self.Up2 = up_conv(ch_in=128,ch_out=64)
+        self.Att2 = Attention_block(F_g=64,F_l=64,F_int=32)
+        self.Up_conv2 = conv_block(ch_in=128, ch_out=64)
 
-        self.Up3 = up_conv(in_channels = 256, out_channels = 128)
-        self.Att3 = Attention_block(F_g = 128, F_l = 128, F_int = 64)
-        self.Up_conv3 = conv_block(ch_in = 256, ch_out = 128)
-
-        self.Up2 = up_conv(in_channels = 128, out_channels = 128)
-        self.Att2 = Attention_block(F_g = 64, F_l = 64, F_int = 32)
-        self.Up_conv2 = conv_block(ch_in = 128, ch_out = 64)
-
-        self.Conv1x1 = nn.Conv2d(64, fin_output_ch, kernel_size = 1, stride = 1, padding = 1, bias = True)
+        self.Conv_1x1 = nn.Conv2d(64,output_ch,kernel_size=1,stride=1,padding=0)
 
     def forward(self, x):
         # Encoding 
