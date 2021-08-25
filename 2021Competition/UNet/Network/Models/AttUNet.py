@@ -32,7 +32,7 @@ class AttUNet(nn.Module):
         self.Att2 = Attention_block(F_g=64,F_l=64,F_int=32)
         self.Up_conv2 = conv_block(ch_in=128, ch_out=64)
 
-        self.Conv_1x1 = nn.Conv2d(64,output_ch,kernel_size=1,stride=1,padding=0)
+        self.Conv_1x1 = nn.Conv2d(64,1,kernel_size=1,stride=1,padding=0)
 
     def forward(self, x):
         # Encoding 
